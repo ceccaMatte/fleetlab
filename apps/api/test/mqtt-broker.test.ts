@@ -42,6 +42,19 @@ async function waitForMqttConnect(client: MqttClient) {
   });
 }
 
+async function subscribe(client: MqttClient, topic: string) {
+  await new Promise<void>((resolve, reject) => {
+    client.subscribe(topic, (error) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+
+      resolve();
+    });
+  });
+}
+
 describe("mqtt broker", () => {
   const deviceStateStore = new DeviceStateStore();
   let devicePersistenceService: DevicePersistenceService;
@@ -192,5 +205,69 @@ describe("mqtt broker", () => {
         expect.any(String)
       );
     });
+  });
+
+  it("publishes outbound MQTT payloads to subscribed clients", async () => {
+    const address = await broker.start({
+      host: "127.0.0.1",
+      port: 0
+    });
+    const client = mqtt.connect(`mqtt://127.0.0.1:${address.port}`, {
+      clientId: "dashboard-client-1"
+    });
+    clients.push(client);
+
+    await waitForMqttConnect(client);
+    await subscribe(client, deviceTopics.command("AA:BB:CC:DD:EE:FF"));
+
+    const receivedPacket = await new Promise<{ topic: string; payload: string }>((resolve) => {
+      client.once("message", (topic, payload) => {
+        resolve({
+          topic,
+          payload: payload.toString("utf8")
+        });
+      });
+
+      void broker.publish(
+        deviceTopics.command("AA:BB:CC:DD:EE:FF"),
+        JSON.stringify({
+          schema_version: 1,
+          command_id: "11111111-1111-4111-8111-111111111111",
+          device_mac: "AA:BB:CC:DD:EE:FF",
+          issued_at: "2026-04-15T11:00:00.000Z",
+          type: "led.set",
+          payload: {
+            power: true,
+            color_rgb: {
+              r: 255,
+              g: 120,
+              b: 0
+            },
+            brightness: 80
+          }
+        })
+      );
+    });
+
+    expect(receivedPacket).toEqual({
+      topic: "fleetlab/devices/AA:BB:CC:DD:EE:FF/command",
+      payload: JSON.stringify({
+        schema_version: 1,
+        command_id: "11111111-1111-4111-8111-111111111111",
+        device_mac: "AA:BB:CC:DD:EE:FF",
+        issued_at: "2026-04-15T11:00:00.000Z",
+        type: "led.set",
+        payload: {
+          power: true,
+          color_rgb: {
+            r: 255,
+            g: 120,
+            b: 0
+          },
+          brightness: 80
+        }
+      })
+    });
+    expect(devicePersistenceService.recordInboundMessage).not.toHaveBeenCalled();
   });
 });

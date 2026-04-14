@@ -16,7 +16,7 @@ La fase copre sia `command` sia `config`, mantenendoli separati nel protocollo m
    - aggiornare la persistenza degli `ack` per finalizzare il relativo record `DeviceCommand`
    - aggiungere query persistite per ispezionare i comandi registrati
 
-2. [ ] **MQTT outbound publishing**
+2. [x] **MQTT outbound publishing**
    - estendere il broker embedded con la capacita' di pubblicare messaggi outbound verso i topic `command` e `config`
    - introdurre un service applicativo che persista prima il record `pending` e poi pubblichi il messaggio su `MQTT`
    - registrare `publishedAt` solo dopo publish riuscito
