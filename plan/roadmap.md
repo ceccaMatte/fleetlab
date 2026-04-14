@@ -1,16 +1,77 @@
 # Roadmap
 
 ## Scopo
-Tradurre la visione e l'architettura in una sequenza di delivery ordinata, con milestone reviewable e dipendenze esplicite.
+Tradurre la visione e l'architettura in una sequenza di delivery ordinata, con milestone piccole, verificabili e adatte a PR reviewable.
 
-## Contenuti Da Formalizzare
-- fasi di realizzazione dopo il setup repository
-- milestone per ciascun sottosistema
-- dipendenze tra milestone
-- criteri di completamento per ogni fase
-- attivita' volutamente rinviate
+## Fase 1: Repository Setup
+- Definire workspace, workflow, lint, formatting, test runner, CI base e template PR.
+- Verifica minima:
+  - `git diff --check`
+  - `git status --short`
+  - comando di validazione del workspace quando presente
+- Nota: nessuna feature di prodotto in questa fase.
 
-## Note Iniziali
-- La roadmap dovra' preservare PR piccole e focalizzate.
-- Le milestone dovranno essere verificabili localmente con controlli chiari.
-- Le idee fuori scope dovranno essere registrate come follow-up, non incorporate nelle PR correnti.
+## Fase 2: Architettura Tecnica E Contratti
+- Formalizzare protocollo applicativo tra device, simulator e backend.
+- Definire shape dei messaggi `MQTT`, convenzioni di conferma comando e struttura dei canali realtime verso la dashboard.
+- Chiarire modello `event log + projection` per persistenza e lettura.
+- Verifica minima:
+  - review documentale
+  - controllo coerenza tra `vision.md`, `architecture.md`, `requirements.md` e `PLAN.md`
+
+## Fase 3: Skeleton Applicativi
+- Creare gli skeleton di:
+  - backend monolitico modulare
+  - dashboard web
+  - device simulator
+  - firmware ESP32 con `ESP-IDF`
+- Ogni skeleton deve avere entrypoint chiaro ma nessuna feature business completa.
+- Verifica minima:
+  - avvio locale dei package
+  - health check base
+  - build minima del firmware o conferma del toolchain setup
+
+## Fase 4: Persistenza E Stato Corrente
+- Definire lo schema iniziale del database.
+- Introdurre log eventi per telemetria, notifiche e comandi.
+- Introdurre proiezioni di stato corrente per device e stato confermato del LED.
+- Verifica minima:
+  - validazione schema
+  - controllo query di lettura di stato corrente
+
+## Fase 5: Ingestione Device
+- Implementare primo flusso device o simulator -> `MQTT` -> backend -> database.
+- Persistire telemetria e notifiche.
+- Aggiornare le proiezioni di stato in backend.
+- Verifica minima:
+  - test mirati sul flusso di ingestione
+  - controllo persistenza dati e aggiornamento proiezioni
+
+## Fase 6: Dashboard Realtime
+- Implementare bootstrap `snapshot + stream`.
+- Collegare `WebSocket` allo store centrale osservabile.
+- Mostrare stato device, telemetria recente e notifiche persistite.
+- Verifica minima:
+  - test dei reducer o listener dello store
+  - verifica manuale del refresh realtime
+
+## Fase 7: Comandi Remoti Con Conferma
+- Implementare invio comando dalla dashboard al backend.
+- Rifiutare subito i comandi se il device e' offline.
+- Salvare i comandi come `pending` e finalizzarli dopo ACK del device.
+- Aggiornare la UI solo dopo conferma reale.
+- Verifica minima:
+  - test backend su `pending -> confirmed/failed`
+  - test manuale di assenza optimistic UI
+
+## Fase 8: Hardening
+- Rifinire logging, error handling, seed dati e test end-to-end.
+- Validare il comportamento con simulator e firmware reale.
+- Verifica minima:
+  - test end-to-end del percorso base
+  - verifica manuale con almeno un device simulato e uno reale quando disponibile
+
+## Regole Di Delivery
+- Una PR per una decisione tecnica o uno scaffolding step.
+- Nessuna espansione di scope dentro una PR gia' aperta.
+- Le idee non ancora pianificate vanno registrate come follow-up.

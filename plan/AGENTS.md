@@ -33,11 +33,10 @@ For every planning step, use this sequence:
 ## Planning Status
 - Completed:
   - `vision.md`
-- In progress:
   - `architecture.md`
-- Draft, not yet detailed:
+- In progress:
   - `requirements.md`
   - `roadmap.md`
 - Working checkpoint:
-  - product vision is defined
-  - next planning pass should formalize system architecture around devices, server, storage, dashboard, and message flow
+  - architecture baseline is defined around ESP32 devices, MQTT messaging, a modular backend, PostgreSQL persistence, and a responsive web dashboard
+  - next planning pass should formalize message contracts, command acknowledgements, and initial data model details
