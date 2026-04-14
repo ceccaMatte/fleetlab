@@ -29,5 +29,11 @@ Questa cartella raccoglie la documentazione di progettazione del sistema FleetLa
   - contratti V1 dei messaggi codificati nel backend
   - broker `MQTT` embedded integrato nel backend
   - store in-memory e prime route di lettura stato device
+  - schema `Prisma` versionato nel repo
+  - client `Prisma` creato dal backend a partire da `DATABASE_URL`
+  - branch corrente `feat/mqtt-persistence` aggiunge:
+    - servizio di persistenza inbound device verso `PostgreSQL`
+    - broker `MQTT` che inoltra i messaggi inbound sia alla proiezione in-memory sia al layer di persistenza
 - prossimo passo previsto:
-  - schema iniziale `Prisma` e base di persistenza
+  - letture backend dalla proiezione persistita
+  - sostituzione progressiva delle route che oggi leggono solo dallo store in-memory

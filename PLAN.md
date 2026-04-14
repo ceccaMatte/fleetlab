@@ -59,7 +59,13 @@ Nota decisionale: `packages/shared` deve contenere solo contratti e utility davv
   - backend foundation verificata
   - primo slice `MQTT` del backend con broker embedded e ingestione in-memory
 - prossimo task previsto:
-  - schema iniziale `Prisma` e base di persistenza del backend
+  - persistenza dei messaggi device inbound da `MQTT` verso `PostgreSQL`
+  - mantenimento temporaneo della proiezione in-memory come supporto alle route gia' esistenti
+  - branch corrente `feat/mqtt-persistence` aggiunge:
+    - servizio di persistenza inbound per `hello`, `heartbeat`, `telemetry`, `notification`, `ack` e presence
+    - integrazione del broker `MQTT` con scrittura verso database e aggiornamento dello stato in-memory
+  - prossimo task dopo questo branch:
+    - query backend lette dalla proiezione persistita invece che solo dallo store in-memory
 
 ## Primo Set di Milestone
 - Milestone 1: definire workspace, lint, formatting, test runner, CI base e template PR; accettazione: il repository ha una struttura ripetibile, i file di governance sono presenti, e il setup e' descritto in modo chiaro; verifica: `git diff --check`, `git status --short`, comando di validazione del workspace quando introdotto; stop-and-fix: se una verifica fallisce, interrompere la milestone e correggere prima di aggiungere altro; nota decisionale: niente codice applicativo in questa PR.
@@ -67,6 +73,10 @@ Nota decisionale: `packages/shared` deve contenere solo contratti e utility davv
 - Milestone 3: creare gli skeleton di `api`, `device-simulator`, `web-dashboard` e firmware ESP32; accettazione: gli entrypoint esistono ma non contengono feature business; verifica: avvio locale dei package software, pagina placeholder o health check, build minima firmware o validazione del toolchain; stop-and-fix: se un package non parte o manca un entrypoint, fissare prima la struttura; nota decisionale: preferire placeholder minimi e stabili.
 - Milestone 4: definire lo schema iniziale in `Prisma`; accettazione: modelli base per device, telemetria, notifiche, comandi e proiezioni sono chiari e versionati; verifica: `prisma validate`, migrazione generata, controllo che il client venga compilato; stop-and-fix: se lo schema e' ambiguo, bloccare e semplificare prima di proseguire; nota decisionale: modellare solo i dati necessari al primo flusso end-to-end.
 - Milestone 5: produrre un primo flusso simulato end-to-end; accettazione: `device-simulator` invia un evento, il backend lo riceve via `MQTT`, il `database` lo persiste e la dashboard mostra il dato via `WebSocket`; verifica: `Vitest`, `Playwright` per il percorso base, controllo manuale dei dati nel database; stop-and-fix: se uno dei passaggi del flusso fallisce, non aggiungere feature e ripristinare il percorso minimo funzionante.
+- Stato milestone 5:
+  - ingestione `MQTT` verso backend gia' presente
+  - branch corrente aggiunge persistenza dei messaggi inbound e aggiornamento della proiezione persistita
+  - prossimo step operativo: letture backend dal database e allineamento delle route di stato corrente
 - Milestone 6: aggiungere il primo flusso di comando confermato; accettazione: il comando viene salvato come `pending`, il device conferma, il backend aggiorna lo stato e la dashboard mostra il cambiamento solo dopo conferma; verifica: test `Vitest`, richiesta manuale, verifica esplicita di assenza optimistic UI; stop-and-fix: se il backend aggiorna la UI prima della conferma reale, correggere prima di proseguire.
 
 ## Strategia di Verifica

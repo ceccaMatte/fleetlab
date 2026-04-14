@@ -39,6 +39,7 @@ For every planning step, use this sequence:
   - `requirements.md`
   - `roadmap.md`
 - Working checkpoint:
-  - planning baseline is stable and the first backend implementation slices are already merged on `main`
-  - completed implementation slices include backend bootstrap, message contracts, MQTT codec, device state projection, and embedded MQTT ingestion
-  - next planning-sensitive implementation step should define the initial `Prisma` data model for devices, telemetry, notifications, commands, acknowledgements, and state projection
+  - planning baseline is stable and the backend persistence foundation is merged on `main`
+  - completed implementation slices include backend bootstrap, message contracts, MQTT codec, device state projection, embedded MQTT ingestion, initial `Prisma` schema, and backend `Prisma` client wiring
+  - current branch `feat/mqtt-persistence` adds persistence for inbound device traffic from `MQTT` to `PostgreSQL` and updates the persisted device state projection
+  - next implementation step after this branch should expose database-backed reads for device state, telemetry history, and notifications

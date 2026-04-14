@@ -2,12 +2,18 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { buildApp, createAppServices } from "../src/app.ts";
 import { loadEnv } from "../src/config/env.ts";
+import type { DevicePersistenceTransactionClient } from "../src/modules/database/device-persistence.ts";
+import type { DatabaseClient } from "../src/modules/database/prisma-client.ts";
 
 function createTestServices() {
+  const databaseClient = {
+    $transaction: (async (handler: (tx: DevicePersistenceTransactionClient) => Promise<unknown>) =>
+      handler({} as never)) as unknown as DatabaseClient["$transaction"],
+    $disconnect: async () => undefined
+  } satisfies DatabaseClient;
+
   return createAppServices(loadEnv({}), {
-    createDatabaseClient: () => ({
-      $disconnect: async () => undefined
-    })
+    createDatabaseClient: () => databaseClient
   });
 }
 

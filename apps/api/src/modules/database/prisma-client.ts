@@ -1,10 +1,12 @@
 import { PrismaClient, type Prisma } from "@prisma/client";
 
+import type { DevicePersistenceDatabaseClient } from "./device-persistence.ts";
+
 export interface CreateDatabaseClientOptions {
   databaseUrl: string;
 }
 
-export interface DatabaseClient {
+export interface DatabaseClient extends DevicePersistenceDatabaseClient {
   $disconnect(): Promise<void>;
 }
 
