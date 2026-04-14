@@ -24,6 +24,7 @@ Questa cartella raccoglie la documentazione di progettazione del sistema FleetLa
 - repository setup completato e mergiato su `main`
 - backend foundation completata e mergiata su `main`
 - slice `MQTT` backend completata e mergiata su `main`
+- schema iniziale `Prisma`, persistenza inbound e prime route di lettura persistite completate e mergiate su `main`
 - stato attuale del codice:
   - API Fastify avviabile con `GET /health`
   - contratti V1 dei messaggi codificati nel backend
@@ -33,7 +34,7 @@ Questa cartella raccoglie la documentazione di progettazione del sistema FleetLa
   - client `Prisma` creato dal backend a partire da `DATABASE_URL`
   - servizio di persistenza inbound device verso `PostgreSQL`
   - broker `MQTT` che inoltra i messaggi inbound sia alla proiezione in-memory sia al layer di persistenza
-  - branch corrente `feat/db-read-routes` aggiunge letture persistite per device state, telemetry e notifications
+  - letture persistite per device state, telemetry e notifications gia' presenti in `main`
 - prossimo passo previsto:
   - completare il percorso persistito dei comandi e dei relativi ACK
   - ridurre ulteriormente la dipendenza delle route e della UI dallo store in-memory

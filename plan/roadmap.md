@@ -58,7 +58,7 @@ Tradurre la visione e l'architettura in una sequenza di delivery ordinata, con m
 - Stato:
   - ingestione `MQTT` verso backend e proiezione in-memory completate e mergiate su `main`
   - `main` registra i device, salva gli eventi inbound e sincronizza la proiezione persistita
-  - branch corrente `feat/db-read-routes` espone letture backend dal database per stato device, telemetry e notifications
+  - `main` espone letture backend dal database per stato device, telemetry e notifications
   - prossimo step operativo: completare il primo ciclo persistito dei comandi e delle conferme
 
 ## Fase 6: Dashboard Realtime

@@ -41,16 +41,12 @@ For every planning step, use this sequence:
   - planning checkpoints aligned with implementation progress
 - Working checkpoint:
   - planning baseline is stable and the inbound persistence path is merged on `main`
-  - completed implementation slices include backend bootstrap, message contracts, MQTT codec, device state projection, embedded MQTT ingestion, initial `Prisma` schema, backend `Prisma` client wiring, and inbound MQTT persistence
-  - current branch `feat/db-read-routes` adds database-backed reads for device state, telemetry history, and notifications
+  - completed implementation slices include backend bootstrap, message contracts, MQTT codec, device state projection, embedded MQTT ingestion, initial `Prisma` schema, backend `Prisma` client wiring, inbound MQTT persistence, and the first database-backed read routes
   - next implementation step should complete command persistence and confirmed command state transitions
 
 ## Current Implementation Slice
-- Branch target: `feat/db-read-routes`
+- Branch target: `feat/command-lifecycle`
 - Goal:
-  - move the first backend read paths from the in-memory store to the persisted PostgreSQL read model
-- Planned tasks:
-  1. add a Prisma-backed query service for device state, recent telemetry, and notifications. Status: completed
-  2. wire the existing device routes to the query service and add the first persisted read endpoints. Status: completed
-  3. cover the query service with unit tests and the HTTP routes with integration tests. Status: completed
-  4. rerun workspace validation, API typecheck, and API test suite before opening the PR. Status: completed
+  - implement persisted `command` and `config` lifecycle with `pending -> confirmed/failed`
+- Status:
+  - planning not yet written for this branch
