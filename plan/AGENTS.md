@@ -49,4 +49,9 @@ For every planning step, use this sequence:
 - Goal:
   - implement persisted `command` and `config` lifecycle with `pending -> confirmed/failed`
 - Status:
-  - planning not yet written for this branch
+  - planning defined in `plan/backend-command-lifecycle.md`
+- Planned tasks:
+  1. persistence layer for command/config pending records, ACK finalization, and command read queries. Status: pending
+  2. MQTT outbound publishing after persistence and before `publishedAt`. Status: pending
+  3. HTTP routes for command/config creation and `GET /commands`. Status: pending
+  4. final regression checks and PR preparation. Status: pending
