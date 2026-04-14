@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum DeviceMessageKind {
+  HELLO
+  HEARTBEAT
+  TELEMETRY
+  NOTIFICATION
+  ACK
+}
+
+enum DeviceCommandStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
+
+enum DeviceCommandTargetType {
+  COMMAND
+  CONFIG
+}
+
+enum DeviceNotificationStatus {
+  PENDING
+  ACKNOWLEDGED
+}
+
+model Device {
+  id                     String               @id @default(cuid())
+  macAddress             String               @unique
+  displayName            String?
+  displayColor           String?
+  firmwareVersion        String?
+  capabilitiesJson       Json?
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
+  stateProjection        DeviceStateProjection?
+  telemetryEvents        TelemetryEvent[]
+  notifications          DeviceNotification[]
+  commands               DeviceCommand[]
+  commandAcknowledgements DeviceCommandAck[]
+}
+
+model TelemetryEvent {
+  id             String   @id @default(cuid())
+  deviceId       String
+  messageId      String   @unique
+  schemaVersion  Int
+  sentAt         DateTime
+  receivedAt     DateTime @default(now())
+  temperatureC   Decimal  @db.Decimal(5, 2)
+  humidityPct    Decimal  @db.Decimal(5, 2)
+  device         Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@index([deviceId, sentAt(sort: Desc)])
+}
+
+model DeviceNotification {
+  id          String                   @id @default(cuid())
+  deviceId    String
+  messageId   String                   @unique
+  schemaVersion Int
+  sentAt      DateTime
+  receivedAt  DateTime                 @default(now())
+  kind        String
+  message     String
+  status      DeviceNotificationStatus @default(PENDING)
+  acknowledgedAt DateTime?
+  device      Device                   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@index([deviceId, sentAt(sort: Desc)])
+  @@index([status, sentAt(sort: Desc)])
+}
+
+model DeviceCommand {
+  id                String              @id @default(cuid())
+  deviceId          String
+  commandId         String              @unique
+  schemaVersion     Int
+  targetType        DeviceCommandTargetType
+  issuedAt          DateTime
+  requestedBy       String?
+  commandType       String
+  payloadJson       Json
+  status            DeviceCommandStatus @default(PENDING)
+  statusUpdatedAt   DateTime            @default(now())
+  publishedAt       DateTime?
+  confirmedAt       DateTime?
+  failedAt          DateTime?
+  failureReason     String?
+  device            Device              @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  acknowledgements  DeviceCommandAck[]
+
+  @@index([deviceId, issuedAt(sort: Desc)])
+  @@index([status, statusUpdatedAt(sort: Desc)])
+}
+
+model DeviceCommandAck {
+  id             String                  @id @default(cuid())
+  deviceId       String
+  messageId      String                  @unique
+  commandId      String?
+  schemaVersion  Int
+  targetType     DeviceCommandTargetType
+  targetId       String
+  status         DeviceCommandStatus
+  sentAt         DateTime
+  receivedAt     DateTime                @default(now())
+  resultJson     Json?
+  device         Device                  @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  command        DeviceCommand?          @relation(fields: [commandId], references: [id], onDelete: SetNull)
+
+  @@index([deviceId, sentAt(sort: Desc)])
+  @@index([targetType, targetId])
+}
+
+model DeviceStateProjection {
+  id                   String    @id @default(cuid())
+  deviceId             String    @unique
+  status               String
+  firstSeenAt          DateTime
+  lastSeenAt           DateTime
+  lastMessageKind      DeviceMessageKind?
+  firmwareVersion      String?
+  capabilitiesJson     Json?
+  telemetryReceivedAt  DateTime?
+  temperatureC         Decimal?  @db.Decimal(5, 2)
+  humidityPct          Decimal?  @db.Decimal(5, 2)
+  lastNotificationAt   DateTime?
+  lastCommandAckAt     DateTime?
+  lastConfigAckAt      DateTime?
+  ledPower             Boolean?
+  ledColorR            Int?
+  ledColorG            Int?
+  ledColorB            Int?
+  ledBrightness        Int?
+  pollingIntervalSec   Int?
+  updatedAt            DateTime  @updatedAt
+  device               Device    @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+}

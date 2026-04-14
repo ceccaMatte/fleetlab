@@ -8,7 +8,8 @@ describe("loadEnv", () => {
       host: "0.0.0.0",
       port: 3000,
       mqttHost: "0.0.0.0",
-      mqttPort: 18830
+      mqttPort: 18830,
+      databaseUrl: "postgresql://fleetlab:fleetlab@127.0.0.1:5432/fleetlab?schema=public"
     });
   });
 
@@ -17,5 +18,13 @@ describe("loadEnv", () => {
     expect(() => loadEnv({ API_PORT: "abc" })).toThrow("Invalid API_PORT value: abc");
     expect(() => loadEnv({ MQTT_PORT: "0" })).toThrow("Invalid MQTT_PORT value: 0");
     expect(() => loadEnv({ MQTT_PORT: "abc" })).toThrow("Invalid MQTT_PORT value: abc");
+  });
+
+  it("allows overriding the database URL", () => {
+    expect(
+      loadEnv({
+        DATABASE_URL: "postgresql://custom-user:secret@db:5432/custom-db?schema=public"
+      }).databaseUrl
+    ).toBe("postgresql://custom-user:secret@db:5432/custom-db?schema=public");
   });
 });

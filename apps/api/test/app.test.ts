@@ -1,13 +1,24 @@
 import { afterEach, describe, expect, it } from "vitest";
 
-import { buildApp } from "../src/app.ts";
+import { buildApp, type AppServices } from "../src/app.ts";
+import { DeviceStateStore } from "../src/modules/devices/device-state-store.ts";
 
 describe("api app", () => {
-  let app = buildApp();
+  let disconnectCount = 0;
+  const services: AppServices = {
+    deviceStateStore: new DeviceStateStore(),
+    databaseClient: {
+      $disconnect: async () => {
+        disconnectCount += 1;
+      }
+    } as AppServices["databaseClient"]
+  };
+  let app = buildApp(services);
 
   afterEach(async () => {
     await app.close();
-    app = buildApp();
+    disconnectCount = 0;
+    app = buildApp(services);
   });
 
   it("serves the health endpoint", async () => {
@@ -33,5 +44,13 @@ describe("api app", () => {
     expect(response.json()).toEqual({
       items: []
     });
+  });
+
+  it("disconnects the database client when the app closes", async () => {
+    await app.close();
+
+    expect(disconnectCount).toBe(1);
+    app = buildApp(services);
+    disconnectCount = 0;
   });
 });

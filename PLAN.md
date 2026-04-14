@@ -53,6 +53,14 @@ Nota decisionale: `packages/shared` deve contenere solo contratti e utility davv
 5. Dashboard realtime e comandi confermati: bootstrap `snapshot + stream`, stato centralizzato, comandi `pending -> confirmed/failed`, nessuna optimistic UI.
 6. Hardening: test end-to-end, logging, error handling, seed dati, verifica con simulator e firmware reale. PR piccole, una preoccupazione per volta.
 
+## Stato Corrente
+- `main` contiene gia':
+  - planning architetturale e contratti di messaggio
+  - backend foundation verificata
+  - primo slice `MQTT` del backend con broker embedded e ingestione in-memory
+- prossimo task previsto:
+  - schema iniziale `Prisma` e base di persistenza del backend
+
 ## Primo Set di Milestone
 - Milestone 1: definire workspace, lint, formatting, test runner, CI base e template PR; accettazione: il repository ha una struttura ripetibile, i file di governance sono presenti, e il setup e' descritto in modo chiaro; verifica: `git diff --check`, `git status --short`, comando di validazione del workspace quando introdotto; stop-and-fix: se una verifica fallisce, interrompere la milestone e correggere prima di aggiungere altro; nota decisionale: niente codice applicativo in questa PR.
 - Milestone 2: formalizzare architettura e contratti di messaggio; accettazione: protocollo `MQTT`, conferme comando e bootstrap dashboard sono documentati in modo coerente; verifica: review documentale e controllo di allineamento tra `PLAN.md` e `plan/`; stop-and-fix: se emergono conflitti tra documenti, correggere prima di introdurre codice; nota decisionale: nessun dettaglio implementativo inutile in questa milestone.
