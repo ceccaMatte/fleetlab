@@ -28,6 +28,7 @@ const requiredPaths = [
   "packages/shared/package.json",
   "packages/config/package.json",
   "prisma/README.md",
+  "prisma/schema.prisma",
   "docs/README.md"
 ];
 
