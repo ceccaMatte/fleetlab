@@ -68,6 +68,11 @@ Nota decisionale: `packages/shared` deve contenere solo contratti e utility davv
     - introdurre un query service Prisma per stato device, telemetria recente e notifiche
     - collegare le route HTTP del backend alle query persistite
     - mantenere lo store in-memory solo come supporto temporaneo finche' il read model persistito non copre tutto
+  - branch corrente `feat/db-read-routes` aggiunge:
+    - query service Prisma per stato device, telemetria recente e notifiche
+    - route HTTP persistite per `GET /devices`, `GET /devices/:deviceMac/state`, `GET /devices/:deviceMac/telemetry`, `GET /notifications`
+  - prossimo task dopo questo branch:
+    - completare il ciclo dei comandi persistiti e delle conferme `pending -> confirmed/failed`
 
 ## Primo Set di Milestone
 - Milestone 1: definire workspace, lint, formatting, test runner, CI base e template PR; accettazione: il repository ha una struttura ripetibile, i file di governance sono presenti, e il setup e' descritto in modo chiaro; verifica: `git diff --check`, `git status --short`, comando di validazione del workspace quando introdotto; stop-and-fix: se una verifica fallisce, interrompere la milestone e correggere prima di aggiungere altro; nota decisionale: niente codice applicativo in questa PR.
@@ -78,7 +83,8 @@ Nota decisionale: `packages/shared` deve contenere solo contratti e utility davv
 - Stato milestone 5:
   - ingestione `MQTT` verso backend gia' presente
   - persistenza dei messaggi inbound e aggiornamento della proiezione persistita completati e mergiati su `main`
-  - prossimo step operativo: letture backend dal database e allineamento delle route di stato corrente
+  - branch corrente aggiunge letture backend dal database e allineamento delle route di stato corrente
+  - prossimo step operativo: completare il percorso dei comandi confermati sopra la base persistita
 - Milestone 6: aggiungere il primo flusso di comando confermato; accettazione: il comando viene salvato come `pending`, il device conferma, il backend aggiorna lo stato e la dashboard mostra il cambiamento solo dopo conferma; verifica: test `Vitest`, richiesta manuale, verifica esplicita di assenza optimistic UI; stop-and-fix: se il backend aggiorna la UI prima della conferma reale, correggere prima di proseguire.
 
 ## Strategia di Verifica

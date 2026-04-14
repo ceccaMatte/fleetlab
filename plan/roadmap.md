@@ -45,7 +45,7 @@ Tradurre la visione e l'architettura in una sequenza di delivery ordinata, con m
   - schema iniziale `Prisma` completato e mergiato su `main`
   - wiring del client `Prisma` nel backend completato e mergiato su `main`
   - il backend ha ancora una proiezione di stato in-memory utile come appoggio temporaneo per lo sviluppo
-  - branch corrente `feat/mqtt-persistence` aggiunge persistenza inbound `MQTT` e aggiornamento della proiezione persistita
+  - persistenza inbound `MQTT` e aggiornamento della proiezione persistita completati e mergiati su `main`
   - prossima sotto-fase: query di lettura dal database e disaccoppiamento progressivo dallo store in-memory
 
 ## Fase 5: Ingestione Device
@@ -57,8 +57,9 @@ Tradurre la visione e l'architettura in una sequenza di delivery ordinata, con m
   - controllo persistenza dati e aggiornamento proiezioni
 - Stato:
   - ingestione `MQTT` verso backend e proiezione in-memory completate e mergiate su `main`
-  - branch corrente `feat/mqtt-persistence` registra i device, salva gli eventi inbound e sincronizza la proiezione persistita
-  - prossimo step operativo: esporre letture backend dal database per completare il primo ciclo di ingestione persistita
+  - `main` registra i device, salva gli eventi inbound e sincronizza la proiezione persistita
+  - branch corrente `feat/db-read-routes` espone letture backend dal database per stato device, telemetry e notifications
+  - prossimo step operativo: completare il primo ciclo persistito dei comandi e delle conferme
 
 ## Fase 6: Dashboard Realtime
 - Implementare bootstrap `snapshot + stream`.
