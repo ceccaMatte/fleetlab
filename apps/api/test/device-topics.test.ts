@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { deviceTopics, normalizeDeviceMac } from "../src/contracts/device-topics.ts";
+import { deviceTopics, normalizeDeviceMac, parseDeviceStatusTopic } from "../src/contracts/device-topics.ts";
 
 describe("device topics", () => {
   it("normalizes MAC addresses before building topics", () => {
@@ -30,6 +30,15 @@ describe("device topics", () => {
     expect(() => normalizeDeviceMac("not-a-mac")).toThrow("Invalid device MAC address: not-a-mac");
     expect(() => deviceTopics.hello("AA-BB-CC-DD-EE-FF")).toThrow(
       "Invalid device MAC address: AA-BB-CC-DD-EE-FF"
+    );
+  });
+
+  it("parses valid status topics and rejects invalid ones", () => {
+    expect(parseDeviceStatusTopic("fleetlab/devices/AA:BB:CC:DD:EE:FF/status")).toBe(
+      "AA:BB:CC:DD:EE:FF"
+    );
+    expect(() => parseDeviceStatusTopic("fleetlab/devices/AA:BB:CC:DD:EE:FF/hello")).toThrow(
+      "Unsupported device status topic: fleetlab/devices/AA:BB:CC:DD:EE:FF/hello"
     );
   });
 });

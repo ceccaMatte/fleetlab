@@ -19,6 +19,18 @@ function buildDeviceTopic(deviceMac: string, suffix: string) {
   return `${BASE_TOPIC}/${normalizeDeviceMac(deviceMac)}/${suffix}`;
 }
 
+export function parseDeviceStatusTopic(topic: string): string {
+  const match = /^fleetlab\/devices\/(?<deviceMac>(?:[0-9A-F]{2}:){5}[0-9A-F]{2})\/status$/.exec(
+    topic
+  );
+
+  if (!match?.groups?.deviceMac) {
+    throw new Error(`Unsupported device status topic: ${topic}`);
+  }
+
+  return normalizeDeviceMac(match.groups.deviceMac);
+}
+
 export const deviceTopics = {
   hello(deviceMac: string) {
     return buildDeviceTopic(deviceMac, "hello");

@@ -29,7 +29,7 @@ export interface DeviceStateProjection {
   status: "online" | "offline";
   firstSeenAt: string;
   lastSeenAt: string;
-  lastMessageKind: InboundDeviceMessage["kind"];
+  lastMessageKind?: InboundDeviceMessage["kind"];
   firmwareVersion?: string;
   capabilities?: DeviceCapabilitiesSnapshot;
   telemetry?: DeviceTelemetrySnapshot;
@@ -123,6 +123,27 @@ export function markDeviceOffline(
   return {
     ...current,
     status: "offline",
+    lastSeenAt: observedAt
+  };
+}
+
+export function markDeviceOnline(
+  current: DeviceStateProjection | undefined,
+  deviceMac: string,
+  observedAt: string
+): DeviceStateProjection {
+  if (!current) {
+    return {
+      deviceMac,
+      status: "online",
+      firstSeenAt: observedAt,
+      lastSeenAt: observedAt
+    };
+  }
+
+  return {
+    ...current,
+    status: "online",
     lastSeenAt: observedAt
   };
 }
