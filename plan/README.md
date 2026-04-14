@@ -36,6 +36,12 @@ Questa cartella raccoglie la documentazione di progettazione del sistema FleetLa
   - servizio di persistenza inbound device verso `PostgreSQL`
   - broker `MQTT` che inoltra i messaggi inbound sia alla proiezione in-memory sia al layer di persistenza
   - letture persistite per device state, telemetry e notifications gia' presenti in `main`
+  - lifecycle persistito di `command` e `config` completato sul branch corrente:
+    - creazione record `pending`
+    - publish outbound su `MQTT`
+    - finalizzazione `ack -> confirmed/failed`
+    - route HTTP `POST /devices/:deviceMac/commands`, `POST /devices/:deviceMac/config`, `GET /commands`
 - prossimo passo previsto:
-  - completare il percorso persistito dei comandi e dei relativi ACK
+  - portare eventi backend verso canali realtime per la dashboard
   - ridurre ulteriormente la dipendenza delle route e della UI dallo store in-memory
+  - validare il flusso backend con un `device-simulator` end-to-end

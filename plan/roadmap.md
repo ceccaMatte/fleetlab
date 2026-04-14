@@ -77,6 +77,10 @@ Tradurre la visione e l'architettura in una sequenza di delivery ordinata, con m
 - Verifica minima:
   - test backend su `pending -> confirmed/failed`
   - test manuale di assenza optimistic UI
+- Stato:
+  - backend command lifecycle completato sul branch `feat/command-lifecycle`
+  - route HTTP disponibili per `command`, `config` e bootstrap `GET /commands`
+  - prossimo passo backend: propagare aggiornamenti realtime verso la dashboard e consolidare il read side persistito
 
 ## Fase 8: Hardening
 - Rifinire logging, error handling, seed dati e test end-to-end.

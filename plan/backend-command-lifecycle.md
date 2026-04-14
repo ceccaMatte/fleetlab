@@ -27,7 +27,7 @@ La fase copre sia `command` sia `config`, mantenendoli separati nel protocollo m
    - restituire al client il record persistito con stato `pending`
    - aggiungere `GET /commands` per bootstrap lato dashboard
 
-4. [ ] **Verification and regression checks**
+4. [x] **Verification and regression checks**
    - coprire persistence layer, publish path, ACK finalization e route HTTP con test mirati
    - rieseguire `validate`, typecheck e suite API completa
 
@@ -42,6 +42,12 @@ La fase copre sia `command` sia `config`, mantenendoli separati nel protocollo m
 - Quando arriva un `ack`, il backend aggiorna il record del comando a `confirmed` o `failed`.
 - `GET /commands` espone il read model persistito dei comandi.
 - Tutti i test introdotti nella fase risultano verdi insieme alla suite API esistente.
+
+## Verification Summary
+- `npm run validate`
+- `npm run api:check`
+- `npm run api:test`
+- risultato finale sul branch: `17` file test verdi, `60` test verdi
 
 ## Risks And Ambiguities
 - Il protocollo documentato non definisce ancora endpoint HTTP pubblici per `command` e `config`; in questa fase useremo route backend aderenti alla struttura del dominio:

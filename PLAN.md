@@ -63,10 +63,15 @@ Nota decisionale: `packages/shared` deve contenere solo contratti e utility davv
   - integrazione del broker `MQTT` con scrittura verso database e aggiornamento dello stato in-memory
   - query backend lette dalla proiezione persistita invece che solo dallo store in-memory
   - prime route DB-backed per `GET /devices`, `GET /devices/:deviceMac/state`, `GET /devices/:deviceMac/telemetry`, `GET /notifications`
+- branch corrente `feat/command-lifecycle` completa inoltre:
+  - persistenza dei record `pending` per `command` e `config`
+  - publish outbound via `MQTT` con `publishedAt` registrato solo dopo successo
+  - finalizzazione dei record comando su `ack` come `confirmed/failed`
+  - route backend `POST /devices/:deviceMac/commands`, `POST /devices/:deviceMac/config`, `GET /commands`
 - prossimo task previsto:
-  - completare il ciclo dei comandi persistiti e delle conferme `pending -> confirmed/failed`
-  - introdurre endpoint backend per `command` e `config`
-  - pubblicare i comandi verso il device via `MQTT` solo dopo persistenza del record `pending`
+  - introdurre il primo layer realtime backend verso la dashboard
+  - ridurre ulteriormente la dipendenza delle route dallo stato in-memory
+  - validare il backend con un `device-simulator` end-to-end
 
 ## Primo Set di Milestone
 - Milestone 1: definire workspace, lint, formatting, test runner, CI base e template PR; accettazione: il repository ha una struttura ripetibile, i file di governance sono presenti, e il setup e' descritto in modo chiaro; verifica: `git diff --check`, `git status --short`, comando di validazione del workspace quando introdotto; stop-and-fix: se una verifica fallisce, interrompere la milestone e correggere prima di aggiungere altro; nota decisionale: niente codice applicativo in questa PR.

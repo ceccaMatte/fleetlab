@@ -40,18 +40,18 @@ For every planning step, use this sequence:
 - In progress:
   - planning checkpoints aligned with implementation progress
 - Working checkpoint:
-  - planning baseline is stable and the inbound persistence path is merged on `main`
-  - completed implementation slices include backend bootstrap, message contracts, MQTT codec, device state projection, embedded MQTT ingestion, initial `Prisma` schema, backend `Prisma` client wiring, inbound MQTT persistence, and the first database-backed read routes
-  - next implementation step should complete command persistence and confirmed command state transitions
+  - planning baseline is stable and the persisted backend command lifecycle is implemented on the current branch
+  - completed implementation slices include backend bootstrap, message contracts, MQTT codec, device state projection, embedded MQTT ingestion, initial `Prisma` schema, backend `Prisma` client wiring, inbound MQTT persistence, database-backed read routes, persisted command/config dispatch, ACK finalization, and HTTP command routes
+  - next implementation step should reduce the remaining dependence on in-memory backend state and add realtime delivery toward the dashboard
 
 ## Current Implementation Slice
 - Branch target: `feat/command-lifecycle`
 - Goal:
   - implement persisted `command` and `config` lifecycle with `pending -> confirmed/failed`
 - Status:
-  - planning defined in `plan/backend-command-lifecycle.md`
+  - implementation completed and verified locally
 - Planned tasks:
   1. persistence layer for command/config pending records, ACK finalization, and command read queries. Status: completed
   2. MQTT outbound publishing after persistence and before `publishedAt`. Status: completed
   3. HTTP routes for command/config creation and `GET /commands`. Status: completed
-  4. final regression checks and PR preparation. Status: in progress
+  4. final regression checks and PR preparation. Status: completed
