@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { createAppServices } from "../src/app.ts";
 import type { ApiEnv } from "../src/config/env.ts";
+import type { DevicePersistenceTransactionClient } from "../src/modules/database/device-persistence.ts";
 import type { CreateDatabaseClientOptions, DatabaseClient } from "../src/modules/database/prisma-client.ts";
 
 describe("createAppServices", () => {
@@ -13,7 +14,11 @@ describe("createAppServices", () => {
       mqttPort: 18830,
       databaseUrl: "postgresql://fleetlab:fleetlab@127.0.0.1:5432/fleetlab?schema=public"
     };
+    const transactionSpy = vi.fn(
+      async (handler: (tx: DevicePersistenceTransactionClient) => Promise<unknown>) => handler({} as never)
+    );
     const databaseClient = {
+      $transaction: transactionSpy as unknown as DatabaseClient["$transaction"],
       $disconnect: vi.fn(async () => undefined)
     } satisfies DatabaseClient;
     const createDatabaseClient = vi.fn((options: CreateDatabaseClientOptions) => {

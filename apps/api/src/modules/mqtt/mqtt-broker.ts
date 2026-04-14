@@ -5,6 +5,7 @@ import { createServer, type AddressInfo, type Server } from "node:net";
 import { decodeInboundDeviceMessage } from "../../contracts/device-message-codec.ts";
 import { statusMessageSchema } from "../../contracts/device-messages.ts";
 import { parseDeviceStatusTopic } from "../../contracts/device-topics.ts";
+import type { DevicePersistenceService } from "../database/device-persistence.ts";
 import type { DeviceStateStore } from "../devices/device-state-store.ts";
 
 export interface MqttBrokerStartOptions {
@@ -19,9 +20,15 @@ export interface MqttBroker {
 
 interface CreateMqttBrokerOptions {
   deviceStateStore: DeviceStateStore;
+  devicePersistenceService: DevicePersistenceService;
+  onPersistenceError?: (error: unknown) => void;
 }
 
-export function createMqttBroker({ deviceStateStore }: CreateMqttBrokerOptions): MqttBroker {
+export function createMqttBroker({
+  deviceStateStore,
+  devicePersistenceService,
+  onPersistenceError
+}: CreateMqttBrokerOptions): MqttBroker {
   const { createBroker } = aedesPackage as unknown as {
     createBroker: typeof import("aedes").createBroker;
   };
@@ -29,6 +36,13 @@ export function createMqttBroker({ deviceStateStore }: CreateMqttBrokerOptions):
   const clientDevices = new Map<string, string>();
   let server: Server | undefined;
   let started = false;
+  const reportPersistenceError = onPersistenceError ?? (() => undefined);
+
+  const runPersistence = (operation: Promise<void>) => {
+    void operation.catch((error) => {
+      reportPersistenceError(error);
+    });
+  };
 
   const handlePublish = (packet: PublishPacket, client?: Client | null) => {
     if (!client || !packet.topic) {
@@ -40,8 +54,10 @@ export function createMqttBroker({ deviceStateStore }: CreateMqttBrokerOptions):
     if (packet.topic.endsWith("/status")) {
       const deviceMac = parseDeviceStatusTopic(packet.topic);
       const status = statusMessageSchema.parse(payload);
+      const observedAt = new Date().toISOString();
 
-      deviceStateStore.applyPresence(deviceMac, status, new Date().toISOString());
+      deviceStateStore.applyPresence(deviceMac, status, observedAt);
+      runPersistence(devicePersistenceService.recordPresence(deviceMac, status, observedAt));
       clientDevices.set(client.id, deviceMac);
 
       return;
@@ -50,6 +66,7 @@ export function createMqttBroker({ deviceStateStore }: CreateMqttBrokerOptions):
     const message = decodeInboundDeviceMessage(packet.topic, payload);
 
     deviceStateStore.applyInboundMessage(message);
+    runPersistence(devicePersistenceService.recordInboundMessage(message));
     clientDevices.set(client.id, message.deviceMac);
   };
 
@@ -60,7 +77,10 @@ export function createMqttBroker({ deviceStateStore }: CreateMqttBrokerOptions):
       return;
     }
 
-    deviceStateStore.applyPresence(deviceMac, "offline", new Date().toISOString());
+    const observedAt = new Date().toISOString();
+
+    deviceStateStore.applyPresence(deviceMac, "offline", observedAt);
+    runPersistence(devicePersistenceService.recordPresence(deviceMac, "offline", observedAt));
     clientDevices.delete(client.id);
   };
 
