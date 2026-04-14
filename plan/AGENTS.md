@@ -50,6 +50,6 @@ For every planning step, use this sequence:
   - move the first backend read paths from the in-memory store to the persisted PostgreSQL read model
 - Planned tasks:
   1. add a Prisma-backed query service for device state, recent telemetry, and notifications. Status: completed
-  2. wire the existing device routes to the query service and add the first persisted read endpoints. Status: in progress
-  3. cover the query service with unit tests and the HTTP routes with integration tests
-  4. rerun workspace validation, API typecheck, and API test suite before opening the PR
+  2. wire the existing device routes to the query service and add the first persisted read endpoints. Status: completed
+  3. cover the query service with unit tests and the HTTP routes with integration tests. Status: completed
+  4. rerun workspace validation, API typecheck, and API test suite before opening the PR. Status: in progress

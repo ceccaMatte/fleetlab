@@ -1,12 +1,12 @@
 import type { FastifyInstance } from "fastify";
 
 import { normalizeDeviceMac } from "../../contracts/device-topics.ts";
-import type { DeviceStateStore } from "./device-state-store.ts";
+import type { DeviceQueryService } from "../database/device-query-service.ts";
 
-export async function registerDeviceRoutes(app: FastifyInstance, deviceStateStore: DeviceStateStore) {
+export async function registerDeviceRoutes(app: FastifyInstance, deviceQueryService: DeviceQueryService) {
   app.get("/devices", async () => {
     return {
-      items: deviceStateStore.list()
+      items: await deviceQueryService.listDeviceStates()
     };
   });
 
@@ -16,7 +16,7 @@ export async function registerDeviceRoutes(app: FastifyInstance, deviceStateStor
     };
   }>("/devices/:deviceMac/state", async (request, reply) => {
     const deviceMac = normalizeDeviceMac(request.params.deviceMac);
-    const state = deviceStateStore.get(deviceMac);
+    const state = await deviceQueryService.getDeviceState(deviceMac);
 
     if (!state) {
       reply.code(404);
@@ -28,6 +28,18 @@ export async function registerDeviceRoutes(app: FastifyInstance, deviceStateStor
 
     return {
       item: state
+    };
+  });
+
+  app.get<{
+    Params: {
+      deviceMac: string;
+    };
+  }>("/devices/:deviceMac/telemetry", async (request) => {
+    const deviceMac = normalizeDeviceMac(request.params.deviceMac);
+
+    return {
+      items: await deviceQueryService.listDeviceTelemetry(deviceMac)
     };
   });
 }
