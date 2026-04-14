@@ -39,3 +39,10 @@
 
 # debug information files
 *.dwo
+
+# Node.js
+node_modules/
+coverage/
+.turbo/
+dist/
+*.tsbuildinfo

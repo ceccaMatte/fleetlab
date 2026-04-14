@@ -2,6 +2,13 @@ import { existsSync } from "node:fs";
 
 const requiredPaths = [
   "apps/api/package.json",
+  "apps/api/tsconfig.json",
+  "apps/api/src/app.ts",
+  "apps/api/src/server.ts",
+  "apps/api/src/config/env.ts",
+  "apps/api/src/modules/health/health-routes.ts",
+  "apps/api/test/app.test.ts",
+  "apps/api/test/env.test.ts",
   "apps/device-simulator/package.json",
   "apps/web-dashboard/package.json",
   "packages/shared/package.json",
