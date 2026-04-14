@@ -1,13 +1,22 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { buildApp, createAppServices } from "../src/app.ts";
+import { loadEnv } from "../src/config/env.ts";
+
+function createTestServices() {
+  return createAppServices(loadEnv({}), {
+    createDatabaseClient: () => ({
+      $disconnect: async () => undefined
+    })
+  });
+}
 
 describe("device routes", () => {
-  let services = createAppServices();
+  let services = createTestServices();
   let app = buildApp(services);
 
   beforeEach(() => {
-    services = createAppServices();
+    services = createTestServices();
     app = buildApp(services);
   });
 

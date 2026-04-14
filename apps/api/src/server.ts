@@ -3,7 +3,7 @@ import { loadEnv } from "./config/env.ts";
 import { createMqttBroker } from "./modules/mqtt/mqtt-broker.ts";
 
 const env = loadEnv();
-const services = createAppServices();
+const services = createAppServices(env);
 const app = buildApp(services);
 const mqttBroker = createMqttBroker({
   deviceStateStore: services.deviceStateStore
