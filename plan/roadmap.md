@@ -30,6 +30,9 @@ Tradurre la visione e l'architettura in una sequenza di delivery ordinata, con m
   - avvio locale dei package
   - health check base
   - build minima del firmware o conferma del toolchain setup
+- Stato:
+  - backend skeleton completato e mergiato su `main`
+  - simulator, dashboard e firmware ancora da scaffolding
 
 ## Fase 4: Persistenza E Stato Corrente
 - Definire lo schema iniziale del database.
@@ -38,6 +41,9 @@ Tradurre la visione e l'architettura in una sequenza di delivery ordinata, con m
 - Verifica minima:
   - validazione schema
   - controllo query di lettura di stato corrente
+- Stato:
+  - non ancora iniziata sul database
+  - il backend ha gia' una proiezione di stato in-memory utile come appoggio temporaneo per lo sviluppo
 
 ## Fase 5: Ingestione Device
 - Implementare primo flusso device o simulator -> `MQTT` -> backend -> database.
@@ -46,6 +52,9 @@ Tradurre la visione e l'architettura in una sequenza di delivery ordinata, con m
 - Verifica minima:
   - test mirati sul flusso di ingestione
   - controllo persistenza dati e aggiornamento proiezioni
+- Stato:
+  - ingestione `MQTT` verso backend e proiezione in-memory completate e mergiate su `main`
+  - persistenza su database ancora da implementare
 
 ## Fase 6: Dashboard Realtime
 - Implementare bootstrap `snapshot + stream`.

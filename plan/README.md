@@ -19,3 +19,15 @@ Questa cartella raccoglie la documentazione di progettazione del sistema FleetLa
 - `message-contracts.md`: specifica V1 dei messaggi definita
 - `requirements.md`: prima versione requisiti definita
 - `roadmap.md`: roadmap riallineata alle decisioni architetturali
+
+## Stato Implementazione
+- repository setup completato e mergiato su `main`
+- backend foundation completata e mergiata su `main`
+- slice `MQTT` backend completata e mergiata su `main`
+- stato attuale del codice:
+  - API Fastify avviabile con `GET /health`
+  - contratti V1 dei messaggi codificati nel backend
+  - broker `MQTT` embedded integrato nel backend
+  - store in-memory e prime route di lettura stato device
+- prossimo passo previsto:
+  - schema iniziale `Prisma` e base di persistenza

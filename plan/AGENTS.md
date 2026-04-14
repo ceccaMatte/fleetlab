@@ -39,5 +39,6 @@ For every planning step, use this sequence:
   - `requirements.md`
   - `roadmap.md`
 - Working checkpoint:
-  - architecture baseline and messaging V1 are defined around ESP32 devices, MQTT topics, command acknowledgements, a modular backend, PostgreSQL persistence, and a responsive web dashboard
-  - next planning pass should formalize the initial data model and map the contracts into implementation milestones
+  - planning baseline is stable and the first backend implementation slices are already merged on `main`
+  - completed implementation slices include backend bootstrap, message contracts, MQTT codec, device state projection, and embedded MQTT ingestion
+  - next planning-sensitive implementation step should define the initial `Prisma` data model for devices, telemetry, notifications, commands, acknowledgements, and state projection
