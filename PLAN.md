@@ -59,13 +59,20 @@ Nota decisionale: `packages/shared` deve contenere solo contratti e utility davv
   - backend foundation verificata
   - primo slice `MQTT` del backend con broker embedded e ingestione in-memory
 - prossimo task previsto:
+  - schema iniziale `Prisma` e wiring del client database nel backend
   - persistenza dei messaggi device inbound da `MQTT` verso `PostgreSQL`
-  - mantenimento temporaneo della proiezione in-memory come supporto alle route gia' esistenti
-  - branch corrente `feat/mqtt-persistence` aggiunge:
-    - servizio di persistenza inbound per `hello`, `heartbeat`, `telemetry`, `notification`, `ack` e presence
-    - integrazione del broker `MQTT` con scrittura verso database e aggiornamento dello stato in-memory
+  - integrazione del broker `MQTT` con scrittura verso database e aggiornamento dello stato in-memory
+  - query backend lette dalla proiezione persistita invece che solo dallo store in-memory
+  - primo accesso persistito per stato device, telemetria recente e notifiche
+  - branch corrente `feat/db-read-routes` pianificato per:
+    - introdurre un query service Prisma per stato device, telemetria recente e notifiche
+    - collegare le route HTTP del backend alle query persistite
+    - mantenere lo store in-memory solo come supporto temporaneo finche' il read model persistito non copre tutto
+  - branch corrente `feat/db-read-routes` aggiunge:
+    - query service Prisma per stato device, telemetria recente e notifiche
+    - route HTTP persistite per `GET /devices`, `GET /devices/:deviceMac/state`, `GET /devices/:deviceMac/telemetry`, `GET /notifications`
   - prossimo task dopo questo branch:
-    - query backend lette dalla proiezione persistita invece che solo dallo store in-memory
+    - completare il ciclo dei comandi persistiti e delle conferme `pending -> confirmed/failed`
 
 ## Primo Set di Milestone
 - Milestone 1: definire workspace, lint, formatting, test runner, CI base e template PR; accettazione: il repository ha una struttura ripetibile, i file di governance sono presenti, e il setup e' descritto in modo chiaro; verifica: `git diff --check`, `git status --short`, comando di validazione del workspace quando introdotto; stop-and-fix: se una verifica fallisce, interrompere la milestone e correggere prima di aggiungere altro; nota decisionale: niente codice applicativo in questa PR.
@@ -75,8 +82,9 @@ Nota decisionale: `packages/shared` deve contenere solo contratti e utility davv
 - Milestone 5: produrre un primo flusso simulato end-to-end; accettazione: `device-simulator` invia un evento, il backend lo riceve via `MQTT`, il `database` lo persiste e la dashboard mostra il dato via `WebSocket`; verifica: `Vitest`, `Playwright` per il percorso base, controllo manuale dei dati nel database; stop-and-fix: se uno dei passaggi del flusso fallisce, non aggiungere feature e ripristinare il percorso minimo funzionante.
 - Stato milestone 5:
   - ingestione `MQTT` verso backend gia' presente
-  - branch corrente aggiunge persistenza dei messaggi inbound e aggiornamento della proiezione persistita
-  - prossimo step operativo: letture backend dal database e allineamento delle route di stato corrente
+  - persistenza dei messaggi inbound e aggiornamento della proiezione persistita completati e mergiati su `main`
+  - branch corrente aggiunge letture backend dal database e allineamento delle route di stato corrente
+  - prossimo step operativo: completare il percorso dei comandi confermati sopra la base persistita
 - Milestone 6: aggiungere il primo flusso di comando confermato; accettazione: il comando viene salvato come `pending`, il device conferma, il backend aggiorna lo stato e la dashboard mostra il cambiamento solo dopo conferma; verifica: test `Vitest`, richiesta manuale, verifica esplicita di assenza optimistic UI; stop-and-fix: se il backend aggiorna la UI prima della conferma reale, correggere prima di proseguire.
 
 ## Strategia di Verifica

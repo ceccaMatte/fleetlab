@@ -1,17 +1,26 @@
 import { afterEach, describe, expect, it } from "vitest";
 
 import { buildApp, type AppServices } from "../src/app.ts";
+import type { DeviceQueryService } from "../src/modules/database/device-query-service.ts";
 import { DeviceStateStore } from "../src/modules/devices/device-state-store.ts";
 
 describe("api app", () => {
   let disconnectCount = 0;
+  const deviceQueryService: DeviceQueryService = {
+    listDeviceStates: async () => [],
+    getDeviceState: async () => null,
+    listDeviceTelemetry: async () => [],
+    listNotifications: async () => []
+  };
   const services: AppServices = {
     deviceStateStore: new DeviceStateStore(),
     databaseClient: {
+      $transaction: async () => undefined as never,
       $disconnect: async () => {
         disconnectCount += 1;
       }
-    } as AppServices["databaseClient"]
+    } as AppServices["databaseClient"],
+    deviceQueryService
   };
   let app = buildApp(services);
 
