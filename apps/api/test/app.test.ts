@@ -22,4 +22,16 @@ describe("api app", () => {
       status: "ok"
     });
   });
+
+  it("serves an empty device list before MQTT ingestion", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/devices"
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual({
+      items: []
+    });
+  });
 });
