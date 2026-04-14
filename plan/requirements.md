@@ -60,6 +60,8 @@ Raccogliere i requisiti funzionali e operativi che guidano API, modello dati, fi
 - Il backend deve usare `Node.js` e `TypeScript`.
 - Il database deve essere `PostgreSQL`.
 - La comunicazione device/backend deve essere `MQTT-first`.
+- I topic `MQTT` e i payload V1 devono essere documentati e condivisi tra firmware, simulator e backend.
+- I messaggi base V1 devono includere almeno `hello`, `heartbeat`, `telemetry`, `notification`, `ack`, `command` e `config`.
 - La comunicazione backend/dashboard deve usare API HTTP e `WebSocket`.
 - Il firmware reale deve essere sviluppato con `ESP-IDF`.
 - Deve esistere un `device-simulator` compatibile con il protocollo del firmware reale.
@@ -74,6 +76,7 @@ Raccogliere i requisiti funzionali e operativi che guidano API, modello dati, fi
 - dashboard aperta dopo l'arrivo di notifiche non confermate
 - riconnessione di un device gia' noto
 - dati realtime ricevuti mentre la dashboard e' gia' aperta
+- comandi e config in stato `pending` prima dell'`ack`
 
 ## Assunzioni Correnti
 - Nessuna autenticazione o multiutenza nella scope attuale.

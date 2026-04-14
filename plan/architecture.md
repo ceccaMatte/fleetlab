@@ -104,6 +104,12 @@ Descrivere la struttura ad alto livello del sistema FleetLab, i confini tra i co
 - Broker `MQTT` integrato nello stesso backend monolitico
 - Dashboard web servita come applicazione frontend separata nel workspace
 
+## Contratti Di Messaggio
+- I dettagli del protocollo V1 sono formalizzati in `plan/message-contracts.md`.
+- I topic `MQTT` distinguono `hello`, `heartbeat`, `telemetry`, `notification`, `ack`, `command` e `config`.
+- `config` resta separato da `command`, ma segue lo stesso lifecycle di `pending -> confirmed/failed`.
+- Il backend aggiorna la dashboard con stato finale solo dopo `ack`; prima di allora la UI puo' mostrare esclusivamente uno stato `pending`.
+
 ## Assunzioni Correnti
 - Nessuna autenticazione nella scope attuale.
 - Nessuna approvazione manuale per nuovi device.

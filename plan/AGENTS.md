@@ -34,9 +34,10 @@ For every planning step, use this sequence:
 - Completed:
   - `vision.md`
   - `architecture.md`
+  - `message-contracts.md`
 - In progress:
   - `requirements.md`
   - `roadmap.md`
 - Working checkpoint:
-  - architecture baseline is defined around ESP32 devices, MQTT messaging, a modular backend, PostgreSQL persistence, and a responsive web dashboard
-  - next planning pass should formalize message contracts, command acknowledgements, and initial data model details
+  - architecture baseline and messaging V1 are defined around ESP32 devices, MQTT topics, command acknowledgements, a modular backend, PostgreSQL persistence, and a responsive web dashboard
+  - next planning pass should formalize the initial data model and map the contracts into implementation milestones
