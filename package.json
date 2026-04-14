@@ -8,6 +8,10 @@
   ],
   "scripts": {
     "setup": "node scripts/setup.mjs",
-    "validate": "node scripts/validate-workspace.mjs"
+    "validate": "node scripts/validate-workspace.mjs",
+    "api:dev": "npm run dev --workspace @fleetlab/api",
+    "api:start": "npm run start --workspace @fleetlab/api",
+    "api:check": "npm run check --workspace @fleetlab/api",
+    "api:test": "npm run test --workspace @fleetlab/api"
   }
 }
