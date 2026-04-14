@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { createAppServices } from "../src/app.ts";
 import type { ApiEnv } from "../src/config/env.ts";
+import type { DeviceCommandService } from "../src/modules/database/device-command-service.ts";
 import type { DeviceQueryService } from "../src/modules/database/device-query-service.ts";
 import type { DevicePersistenceTransactionClient } from "../src/modules/database/device-persistence.ts";
 import type { CreateDatabaseClientOptions, DatabaseClient } from "../src/modules/database/prisma-client.ts";
@@ -36,16 +37,30 @@ describe("createAppServices", () => {
       listNotifications: vi.fn(async () => [])
     } satisfies DeviceQueryService;
     const createQueryService = vi.fn(() => deviceQueryService);
+    const deviceCommandService = {
+      createPendingCommand: vi.fn(async () => {
+        throw new Error("not implemented");
+      }),
+      createPendingConfig: vi.fn(async () => {
+        throw new Error("not implemented");
+      }),
+      markCommandPublished: vi.fn(async () => undefined),
+      listCommands: vi.fn(async () => [])
+    } satisfies DeviceCommandService;
+    const createCommandService = vi.fn(() => deviceCommandService);
 
     const services = createAppServices(env, {
       createDatabaseClient,
-      createDeviceQueryService: createQueryService
+      createDeviceQueryService: createQueryService,
+      createDeviceCommandService: createCommandService
     });
 
     expect(createDatabaseClient).toHaveBeenCalledOnce();
     expect(createQueryService).toHaveBeenCalledWith(databaseClient);
+    expect(createCommandService).toHaveBeenCalledWith(databaseClient);
     expect(services.databaseClient).toBe(databaseClient);
     expect(services.deviceQueryService).toBe(deviceQueryService);
+    expect(services.deviceCommandService).toBe(deviceCommandService);
     expect(services.deviceStateStore.list()).toEqual([]);
   });
 });

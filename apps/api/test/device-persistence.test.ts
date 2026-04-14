@@ -25,7 +25,8 @@ function createMockDatabaseClient() {
       create: vi.fn(async () => ({}))
     },
     deviceCommand: {
-      findUnique: vi.fn(async () => null)
+      findUnique: vi.fn(async () => null),
+      update: vi.fn(async () => ({}))
     },
     deviceCommandAck: {
       create: vi.fn(async () => ({}))
@@ -422,6 +423,17 @@ describe("device persistence service", () => {
         }
       }
     });
+    expect(tx.deviceCommand.update).toHaveBeenCalledWith({
+      where: {
+        id: "command-row-1"
+      },
+      data: {
+        status: DeviceCommandStatus.CONFIRMED,
+        statusUpdatedAt: sentAt,
+        confirmedAt: sentAt,
+        failedAt: null
+      }
+    });
     expect(tx.deviceStateProjection.upsert).toHaveBeenCalledWith({
       where: {
         deviceId: "device-1"
@@ -515,6 +527,7 @@ describe("device persistence service", () => {
         }
       }
     });
+    expect(tx.deviceCommand.update).not.toHaveBeenCalled();
     expect(tx.deviceStateProjection.upsert).toHaveBeenCalledWith({
       where: {
         deviceId: "device-1"

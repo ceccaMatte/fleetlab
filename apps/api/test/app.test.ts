@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 
 import { buildApp, type AppServices } from "../src/app.ts";
+import type { DeviceCommandService } from "../src/modules/database/device-command-service.ts";
 import type { DeviceQueryService } from "../src/modules/database/device-query-service.ts";
 import { DeviceStateStore } from "../src/modules/devices/device-state-store.ts";
 
@@ -12,6 +13,16 @@ describe("api app", () => {
     listDeviceTelemetry: async () => [],
     listNotifications: async () => []
   };
+  const deviceCommandService: DeviceCommandService = {
+    createPendingCommand: async () => {
+      throw new Error("not implemented");
+    },
+    createPendingConfig: async () => {
+      throw new Error("not implemented");
+    },
+    markCommandPublished: async () => undefined,
+    listCommands: async () => []
+  };
   const services: AppServices = {
     deviceStateStore: new DeviceStateStore(),
     databaseClient: {
@@ -20,7 +31,8 @@ describe("api app", () => {
         disconnectCount += 1;
       }
     } as AppServices["databaseClient"],
-    deviceQueryService
+    deviceQueryService,
+    deviceCommandService
   };
   let app = buildApp(services);
 

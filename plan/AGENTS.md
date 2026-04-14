@@ -40,17 +40,18 @@ For every planning step, use this sequence:
 - In progress:
   - planning checkpoints aligned with implementation progress
 - Working checkpoint:
-  - planning baseline is stable and the inbound persistence path is merged on `main`
-  - completed implementation slices include backend bootstrap, message contracts, MQTT codec, device state projection, embedded MQTT ingestion, initial `Prisma` schema, backend `Prisma` client wiring, and inbound MQTT persistence
-  - current branch `feat/db-read-routes` adds database-backed reads for device state, telemetry history, and notifications
-  - next implementation step should complete command persistence and confirmed command state transitions
+  - planning baseline is stable and the persisted backend command lifecycle is implemented on the current branch
+  - completed implementation slices include backend bootstrap, message contracts, MQTT codec, device state projection, embedded MQTT ingestion, initial `Prisma` schema, backend `Prisma` client wiring, inbound MQTT persistence, database-backed read routes, persisted command/config dispatch, ACK finalization, and HTTP command routes
+  - next implementation step should reduce the remaining dependence on in-memory backend state and add realtime delivery toward the dashboard
 
 ## Current Implementation Slice
-- Branch target: `feat/db-read-routes`
+- Branch target: `feat/command-lifecycle`
 - Goal:
-  - move the first backend read paths from the in-memory store to the persisted PostgreSQL read model
+  - implement persisted `command` and `config` lifecycle with `pending -> confirmed/failed`
+- Status:
+  - implementation completed and verified locally
 - Planned tasks:
-  1. add a Prisma-backed query service for device state, recent telemetry, and notifications. Status: completed
-  2. wire the existing device routes to the query service and add the first persisted read endpoints. Status: completed
-  3. cover the query service with unit tests and the HTTP routes with integration tests. Status: completed
-  4. rerun workspace validation, API typecheck, and API test suite before opening the PR. Status: completed
+  1. persistence layer for command/config pending records, ACK finalization, and command read queries. Status: completed
+  2. MQTT outbound publishing after persistence and before `publishedAt`. Status: completed
+  3. HTTP routes for command/config creation and `GET /commands`. Status: completed
+  4. final regression checks and PR preparation. Status: completed

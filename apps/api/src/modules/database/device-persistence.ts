@@ -28,6 +28,7 @@ export interface DevicePersistenceTransactionClient {
   };
   deviceCommand: {
     findUnique(args: Prisma.DeviceCommandFindUniqueArgs): Promise<DeviceCommandRecord | null>;
+    update(args: Prisma.DeviceCommandUpdateArgs): Promise<unknown>;
   };
   deviceCommandAck: {
     create(args: Prisma.DeviceCommandAckCreateArgs): Promise<unknown>;
@@ -308,6 +309,21 @@ export function createDevicePersistenceService(
                 resultJson: toJsonValue(message.payload.result)
               }
             });
+
+            if (command) {
+              await tx.deviceCommand.update({
+                where: {
+                  id: command.id
+                },
+                data: {
+                  status: toCommandStatus(message.payload.status),
+                  statusUpdatedAt: observedAtDate,
+                  confirmedAt:
+                    message.payload.status === "confirmed" ? observedAtDate : null,
+                  failedAt: message.payload.status === "failed" ? observedAtDate : null
+                }
+              });
+            }
 
             const ledProjection =
               message.payload.target_type === "command"

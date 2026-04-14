@@ -15,6 +15,7 @@ export interface MqttBrokerStartOptions {
 
 export interface MqttBroker {
   start(options: MqttBrokerStartOptions): Promise<{ host: string; port: number }>;
+  publish(topic: string, payload: string): Promise<void>;
   close(): Promise<void>;
 }
 
@@ -118,6 +119,32 @@ export function createMqttBroker({
         host: address.address,
         port: address.port
       };
+    },
+    async publish(topic, payload) {
+      if (!started) {
+        throw new Error("MQTT broker is not started");
+      }
+
+      await new Promise<void>((resolve, reject) => {
+        broker.publish(
+          {
+            cmd: "publish",
+            dup: false,
+            topic,
+            payload: Buffer.from(payload, "utf8"),
+            qos: 0,
+            retain: false
+          },
+          (error?: Error) => {
+            if (error) {
+              reject(error);
+              return;
+            }
+
+            resolve();
+          }
+        );
+      });
     },
     async close() {
       const closeServer = async () => {
