@@ -11,23 +11,23 @@ Implementare il primo lifecycle completo dei comandi backend:
 La fase copre sia `command` sia `config`, mantenendoli separati nel protocollo ma coerenti nello stesso flusso applicativo.
 
 ## Ordered Tasks
-1. **Persistence layer for command lifecycle**
+1. [x] **Persistence layer for command lifecycle**
    - introdurre un service backend per creare record `pending` di `command` e `config`
    - aggiornare la persistenza degli `ack` per finalizzare il relativo record `DeviceCommand`
    - aggiungere query persistite per ispezionare i comandi registrati
 
-2. **MQTT outbound publishing**
+2. [ ] **MQTT outbound publishing**
    - estendere il broker embedded con la capacita' di pubblicare messaggi outbound verso i topic `command` e `config`
    - introdurre un service applicativo che persista prima il record `pending` e poi pubblichi il messaggio su `MQTT`
    - registrare `publishedAt` solo dopo publish riuscito
 
-3. **HTTP routes for command and config**
+3. [ ] **HTTP routes for command and config**
    - aggiungere route HTTP per inviare `command` e `config`
    - rifiutare subito la richiesta se il device risulta offline
    - restituire al client il record persistito con stato `pending`
    - aggiungere `GET /commands` per bootstrap lato dashboard
 
-4. **Verification and regression checks**
+4. [ ] **Verification and regression checks**
    - coprire persistence layer, publish path, ACK finalization e route HTTP con test mirati
    - rieseguire `validate`, typecheck e suite API completa
 
