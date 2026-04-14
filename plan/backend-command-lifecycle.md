@@ -21,7 +21,7 @@ La fase copre sia `command` sia `config`, mantenendoli separati nel protocollo m
    - introdurre un service applicativo che persista prima il record `pending` e poi pubblichi il messaggio su `MQTT`
    - registrare `publishedAt` solo dopo publish riuscito
 
-3. [ ] **HTTP routes for command and config**
+3. [x] **HTTP routes for command and config**
    - aggiungere route HTTP per inviare `command` e `config`
    - rifiutare subito la richiesta se il device risulta offline
    - restituire al client il record persistito con stato `pending`

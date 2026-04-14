@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { buildApp, createAppServices } from "../src/app.ts";
 import { loadEnv } from "../src/config/env.ts";
+import type { DeviceCommandService } from "../src/modules/database/device-command-service.ts";
 import type { DeviceQueryService } from "../src/modules/database/device-query-service.ts";
 import type { DevicePersistenceTransactionClient } from "../src/modules/database/device-persistence.ts";
 import type { DatabaseClient } from "../src/modules/database/prisma-client.ts";
@@ -42,10 +43,21 @@ function createTestServices() {
     ],
     listNotifications: async () => []
   };
+  const deviceCommandService: DeviceCommandService = {
+    createPendingCommand: async () => {
+      throw new Error("not implemented");
+    },
+    createPendingConfig: async () => {
+      throw new Error("not implemented");
+    },
+    markCommandPublished: async () => undefined,
+    listCommands: async () => []
+  };
 
   return createAppServices(loadEnv({}), {
     createDatabaseClient: () => databaseClient,
-    createDeviceQueryService: () => deviceQueryService
+    createDeviceQueryService: () => deviceQueryService,
+    createDeviceCommandService: () => deviceCommandService
   });
 }
 

@@ -1,5 +1,6 @@
 import { buildApp, createAppServices } from "./app.ts";
 import { loadEnv } from "./config/env.ts";
+import { createDeviceCommandDispatchService } from "./modules/commands/device-command-dispatch-service.ts";
 import {
   createDevicePersistenceService,
   type DevicePersistenceDatabaseClient
@@ -8,7 +9,6 @@ import { createMqttBroker } from "./modules/mqtt/mqtt-broker.ts";
 
 const env = loadEnv();
 const services = createAppServices(env);
-const app = buildApp(services);
 const devicePersistenceService = createDevicePersistenceService(
   services.databaseClient as DevicePersistenceDatabaseClient
 );
@@ -16,8 +16,16 @@ const mqttBroker = createMqttBroker({
   deviceStateStore: services.deviceStateStore,
   devicePersistenceService,
   onPersistenceError: (error) => {
-    app.log.error(error);
+    console.error(error);
   }
+});
+const deviceCommandDispatchService = createDeviceCommandDispatchService(
+  services.deviceCommandService,
+  mqttBroker
+);
+const app = buildApp({
+  ...services,
+  deviceCommandDispatchService
 });
 
 try {
